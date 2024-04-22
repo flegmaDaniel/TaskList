@@ -25,23 +25,33 @@ namespace Task_3
         /// <summary>
         /// If the windows state is true, the window is open.
         /// </summary>
-        public bool KitchenRoomWindowState { get; set; }
-        public bool LivingRoomWindowState { get; set; }
-        public bool BedRoomWindowState { get; set; }
+        public bool KitchenRoomWindowState { get; private set; }
+        public bool LivingRoomWindowState { get; private set; }
+        public bool BedRoomWindowState { get; private set; }
 
-        public Dictionary<int,string> favouriteMusic { get; } = new Dictionary<int, string>{  {1 , "Rihanna - Diamonds" },
-                                                                                              {2,"Linkin Park - Numb" },
-                                                                                              {3, "Zámbó Jimmy - Még nem veszíthetek" } };
+        /// <summary>
+        /// Favorite musics
+        /// </summary>
+        public Dictionary<int,string> FavouriteMusic { get; } = 
+            new Dictionary<int, string>{  
+                {1 , "Rihanna - Diamonds" },
+                {2,"Linkin Park - Numb" },
+                {3, "Zámbó Jimmy - Még nem veszíthetek" } };
 
         /// <summary>
         /// Light intensity scales 0 to 3. 3 is the most intense
         /// </summary>
-        private int i_LightIntensity { get; set; }
+        private int LightIntensity { get; set; }
 
-        public ISecuritySystem SecuritySystem { get; set; }
+        /// <summary>
+        /// Security system
+        /// </summary>
+        private ISecuritySystem SecuritySystem { get; set; }
 
-        public bool AutomationEnabled { get; set; }
-
+        /// <summary>
+        /// Is automation enabled
+        /// </summary>
+        private bool AutomationEnabled { get; set; }
 
         public SmartHome_3(ISecuritySystem securitySystem)
         {
@@ -50,44 +60,73 @@ namespace Task_3
             AutomationEnabled  = true;
         }
 
-
+        /// <summary>
+        /// Event handler method for the SomeOneAtTheDoor event
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <param name="args">Arguments</param>
         public void DoSmartThingsOnPersonArrival(object? obj, DoorVisitor args)
         {
-            if(AutomationEnabled == true)
+            if (!AutomationEnabled)
             {
-                if (SecuritySystem.HasAccessToTheHouse(args.VisitorId))
+                return;
+            }
+
+            if (SecuritySystem.HasAccessToTheHouse(args.VisitorId))
+            {
+                try
                 {
-                    //Start music on arrival!
+                    //Start music on arrival
+                    // The client auth token should be retrieved from the appsettings.json file
                     MagicMusicBox musicBox = new MagicMusicBox("asdas213%w3123+__SpeakerAuthToken__3(%16dsf7+563+35gfd");
 
-                    string mName = favouriteMusic[args.VisitorId];
-                    musicBox.PlayMusicByName(mName);
-                    //
-
-                    //This section opens the windows
-                    KitchenRoomWindowState = true;
-                    LivingRoomWindowState = true;
-                    LivingRoomWindowState = true;
-                    //
-
-                    //Turn up the lights if necessary
-                    if (DateTime.Now.Hour > 18 || DateTime.Now.Hour < 6)
-                    {
-                        //It's enough to set intensity to 2 when it's dark outside.
-                        i_LightIntensity = 2;
-                    }
-                    else
-                    {
-                        i_LightIntensity = 0; //if it's not night, no needs for lamps
-                    }
+                    string name = FavouriteMusic[args.VisitorId];
+                    musicBox.PlayMusicByName(name);
                 }
-                else
+                catch (Exception)
                 {
-                    SecuritySystem.LeaveMessageOnDoorBell("You are not allowed to entry! - (unauthorized)");
+
+                    throw;
                 }
+
+                //This section opens the windows
+                OpenWindows();
+
+                //Turn up the lights if necessary
+                TurnUpLights();
+            }
+            else
+            {
+                SecuritySystem.LeaveMessageOnDoorBell("You are not allowed to entry! - (unauthorized)");
             }
         }
 
+        /// <summary>
+        /// Turns up the lights if necessary
+        /// </summary>
+        private void TurnUpLights()
+        {
+            if (DateTime.Now.Hour > 18 || DateTime.Now.Hour < 6)
+            {
+                //It's enough to set intensity to 2 when it's dark outside.
+                LightIntensity = 2;
+            }
+            else
+            {
+                //if it's not night, no needs for lamps
+                LightIntensity = 0;
+            }
+        }
+
+        /// <summary>
+        /// Opens the windows
+        /// </summary>
+        private void OpenWindows()
+        {
+            KitchenRoomWindowState = true;
+            LivingRoomWindowState = true;
+            LivingRoomWindowState = true;
+        }
     }
 
     #endregion
