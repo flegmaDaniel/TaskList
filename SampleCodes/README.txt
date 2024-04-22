@@ -21,8 +21,10 @@ The applicant should be able to create a branch and submit his answers/code ther
 -Inheritance basics in C#
 -Call-Chain through inheritance (through excercise)
 
-
-
+(Task 3 : SmartHome_3)
+-Clean code directives
+-Refactoring skills
+-Awerness of codesmells
 
 -Exception handling
 
@@ -36,6 +38,3 @@ LINQ
 	*Lambda expressions
 
 	
-
-
-[Clean coding]
