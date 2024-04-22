@@ -9,7 +9,7 @@ namespace SampleCodes
         {
             Task_1.RunTask.Run();
             //Task_2.RunTask.Run();
-
+            Console.WriteLine("Have a nice day");
             Console.ReadKey();
 
         }
