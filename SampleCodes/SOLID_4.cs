@@ -13,70 +13,53 @@ public interface IAnimal
     void Move();
     void Eat();
     void Sleep();
+}
+
+public interface IFlying
+{
     void Fly();
 }
 
-public class Dog : IAnimal
+public abstract class Animal : IAnimal
 {
-    public void Move()
+    public virtual void Move()
     {
-        Console.WriteLine("Dog is running.");
+        Console.WriteLine($"{GetType().Name} is moving.");
     }
 
-    public void Eat()
+    public virtual void Eat()
     {
-        Console.WriteLine("Dog is eating.");
+        Console.WriteLine($"{GetType().Name} is eating.");
     }
 
-    public void Sleep()
+    public virtual void Sleep()
     {
-        Console.WriteLine("Dog is sleeping.");
+        Console.WriteLine($"{GetType().Name} is sleeping.");
+    }
+}
+public abstract class RunningAnimal : Animal
+{
+    public override void Move()
+    {
+        Run();
     }
 
-    public void Fly()
+    protected void Run()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"{GetType().Name} is running.");
     }
 }
 
-public class Cat : IAnimal
+public class Dog : RunningAnimal
 {
-    public void Move()
-    {
-        Console.WriteLine("Cat is running.");
-    }
-
-    public void Eat()
-    {
-        Console.WriteLine("Cat is eating.");
-    }
-
-    public void Sleep()
-    {
-        Console.WriteLine("Cat is sleeping.");
-    }
-    public void Fly()
-    {
-        throw new NotImplementedException();
-    }
 }
 
-public class Bird : IAnimal
+public class Cat : RunningAnimal
 {
-    public void Move()
-    {
-        Console.WriteLine("Bird is moving.");
-    }
+}
 
-    public void Eat()
-    {
-        Console.WriteLine("Bird is eating.");
-    }
-
-    public void Sleep()
-    {
-        Console.WriteLine("Bird is sleeping.");
-    }
+public class Bird : Animal, IFlying
+{
     public void Fly()
     {
         Console.WriteLine("Bird is flying.");
@@ -93,19 +76,23 @@ public class Zoo
 
     public void StartZoo()
     {
-        try
+        foreach (var animal in animals)
         {
-            foreach (var animal in animals)
+            try
             {
                 animal.Move();
                 animal.Eat();
-                animal.Fly();
                 animal.Sleep();
+
+                if (animal is IFlying flyingAnimal)
+                {
+                    flyingAnimal.Fly();
+                }
             }
-        } 
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Animal has a problem: {ex.Message}");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{animal.GetType().Name} has a problem: {ex.Message}");
+            }
         }
     }
 }
@@ -114,15 +101,12 @@ public class Zoo
 
 public static class RunTask
 {
-
     public static void Run()
     {
-
         Console.WriteLine("Running Task 4 \n");
-        Zoo zoo = new Zoo();
+        var zoo = new Zoo();
         zoo.StartZoo();
     }
 }
 
 #endregion
-

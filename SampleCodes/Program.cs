@@ -13,8 +13,6 @@ namespace SampleCodes
             Task_4.RunTask.Run();
 
             Console.ReadKey();
-
         }
-
     }
 }
