@@ -1,8 +1,29 @@
 #region Questions
 
-// How would you improve the code's error handling?
-// What SOLID principles does the code violate and how would you fix them?
-// Can you think of any other optimizations?
+/***
+How would you improve the code's error handling?
+
+The error handling in the original code happens outside the foreach loop. If the code reaches an error, which it certainly will because of the `NotImplementedException`s, the program won't be able to continue with the following animals, even though they might run without any exceptions.
+***/
+
+/***
+What SOLID principles does the code violate and how would you fix them?
+
+Single Responsibility Principle,
+Interface Segregation Principle:
+The IAnimal interface requires all animals to implement Fly(), which is not appropriate for all animals. Introducing a separate IFlying interface can solve this issue.
+   
+Open/Closed Principle:
+    The original solution makes it hard to introduce new animal behaviors or types without having to modify existing animal implementations.
+***/
+
+/*** 
+Can you think of any other optimizations?
+
+Using polymorphism and abstract class: a common Animal ancestor class can reduce redundancy and provide a default implementation for common behaviors using GetType().Name to dynamically identify the current subclass at runtime.
+   
+I've also introduced a RunningAnimal ancestor for Cat and Dog to override the default Move method as they are both running.
+***/
 
 #endregion
 
